@@ -1,1 +1,1 @@
-sample_int:INTEGER,sample_timestamp:TIMESTAMP,sample_string:STRING,sample_date:DATE
+provider_type_cd:INTEGER,sample_timestamp:TIMESTAMP,sample_string:STRING,sample_date:DATE
