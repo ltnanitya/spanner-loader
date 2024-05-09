@@ -1,0 +1,98 @@
+[
+  {
+    "name": "ct_client_id",
+    "type": "INTEGER",
+    "mode": "Required",
+    "description": "[FK] [COMP_KEY = Y] "
+  },
+  {
+    "name": "cbd_billing_div_no",
+    "type": "INTEGER",
+    "mode": "Required",
+    "description": "[FK] [COMP_KEY = Y] "
+  },
+  {
+    "name": "revision_no",
+    "type": "INTEGER",
+    "mode": "Required",
+    "description": "[PK] [COMP_KEY = Y] "
+  },
+  {
+    "name": "psa_rolling_period_cd",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "pbo_subm_grace_period",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "pbo_bnft_mmdd",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "pbo_statement_heading",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "pbo_statement_fren_heading",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "row_eff_dt",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "row_exp_dt",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "pbo_lupd_ts",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "pbo_lupd_oper_cd",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "delete_dt",
+    "type": "TIMESTAMP",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "delete_oper_cd",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "delete_reason_cd",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": " "
+  },
+  {
+    "name": "anonymized",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE",
+    "description": " "
+  }
+]

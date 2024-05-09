@@ -39,14 +39,14 @@ def parse_schema(schema_file):
     """ Parse a local comma separated schema file and return a dict mapping of
     column name -> column type """
 
-    with open(schema_file, 'r') as schema:
-        col_mapping = OrderedDict()
-        columns = schema.read().split(",")
-        for column in columns:
-            column = re.sub(r'[\n\t\s]*', '', column)
-            col_name, col_type = column.split(":")
-            col_mapping[col_name] = col_type
-
+    # with open(schema_file, 'r') as schema:
+    #     col_mapping = OrderedDict()
+    #     columns = schema.read().split(",")
+    #     for column in columns:
+    #         column = re.sub(r'[\n\t\s]*', '', column)
+    #         col_name, col_type = column.split(":")
+    #         col_mapping[col_name] = col_type
+    
     return col_mapping
 
 def get_timestamp_with_nanoseconds(timestamp_string):
@@ -152,22 +152,22 @@ def load_file(instance_id,
     print('Determining number of rows in source file {}...'
           .format(file_name))
 
-    # with gzip.open(local_file_name, "rt") as source_file:
-    #     reader = csv.DictReader(source_file,
-    #                             delimiter=delimiter,
-    #                             fieldnames=src_col)
+    with gzip.open(local_file_name, "rt") as source_file:
+        reader = csv.DictReader(source_file,
+                                delimiter=delimiter,
+                                fieldnames=src_col)
 
-    #     total_rows = sum(1 for row in reader)
+        total_rows = sum(1 for row in reader)
 
-    #     print('Detected {:,} rows in source file: {}'
-    #           .format(total_rows, file_name))
+        print('Detected {:,} rows in source file: {}'
+              .format(total_rows, file_name))
 
-    # # Re-initialize the row iterator, for reals this time
-    # with gzip.open(local_file_name, "rt") as source_file:
-    #     reader = csv.DictReader(source_file,
-    #                             delimiter=delimiter,
-    #                             fieldnames=src_col)
-    reader = pq.read_table(local_file_name).to_pydict()
+    # Re-initialize the row iterator, for reals this time
+    with gzip.open(local_file_name, "rt") as source_file:
+        reader = csv.DictReader(source_file,
+                                delimiter=delimiter,
+                                fieldnames=src_col)
+    # reader = pq.read_table(local_file_name).to_pydict()
         # Initialize counter variables
     row_cnt = 1
     batch_cnt = 0
