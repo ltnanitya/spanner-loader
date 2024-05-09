@@ -6,6 +6,7 @@ import codecs
 import argparse
 import logging
 import pandas as pd
+import json
 import pyarrow.parquet as pq
 from collections import OrderedDict
 from google.oauth2 import service_account
@@ -46,7 +47,6 @@ def parse_schema(schema_file):
     #         column = re.sub(r'[\n\t\s]*', '', column)
     #         col_name, col_type = column.split(":")
     #         col_mapping[col_name] = col_type
-    def parse_schema(schema_file):
     col_mapping = OrderedDict()
     with open(schema_file) as f:
         d = json.load(f)
@@ -176,68 +176,68 @@ def load_file(instance_id,
                                 fieldnames=src_col)
     # reader = pq.read_table(local_file_name).to_pydict()
         # Initialize counter variables
-    row_cnt = 1
-    batch_cnt = 0
-    insert_cnt = 0
-    row_batch = []
+        row_cnt = 1
+        batch_cnt = 0
+        insert_cnt = 0
+        row_batch = []
 
-    for row in reader:
-        skip_row = False
-        target_row = []
-        source_row = OrderedDict(((col, row[col]) for col in src_col))
+        for row in reader:
+            skip_row = False
+            target_row = []
+            source_row = OrderedDict(((col, row[col]) for col in src_col))
 
-        printProgressBar(row_cnt,
-                            total_rows,
-                            prefix='Rows loaded: {:,}/{:,}'
-                            .format(row_cnt, total_rows))
+            printProgressBar(row_cnt,
+                                total_rows,
+                                prefix='Rows loaded: {:,}/{:,}'
+                                .format(row_cnt, total_rows))
 
-        if add_uuid:
-            target_row.append(str(uuid.uuid4()))
+            if add_uuid:
+                target_row.append(str(uuid.uuid4()))
 
-        for col_name, col_value in source_row.items():
-            logging.debug('Processing column: {} = {}'
-                            .format(col_name, col_value))
+            for col_name, col_value in source_row.items():
+                logging.debug('Processing column: {} = {}'
+                                .format(col_name, col_value))
 
-            try:
-                target_cell = apply_type[col_mapping[col_name]](col_value)
-            except ValueError as err:
-                logging.warning(('Bad field detected in row {:,}: '
-                                    'col = {}, value = {} '
-                                    'Skipping row...')
-                                .format(row_cnt, col_name, col_value))
-                skip_row = True
-                break
-            else:
-                target_row.append(target_cell)
+                try:
+                    target_cell = apply_type[col_mapping[col_name]](col_value)
+                except ValueError as err:
+                    logging.warning(('Bad field detected in row {:,}: '
+                                        'col = {}, value = {} '
+                                        'Skipping row...')
+                                    .format(row_cnt, col_name, col_value))
+                    skip_row = True
+                    break
+                else:
+                    target_row.append(target_cell)
 
-        if not skip_row:
-            row_batch.append(target_row)
-            batch_cnt += 1
-            insert_cnt += 1
+            if not skip_row:
+                row_batch.append(target_row)
+                batch_cnt += 1
+                insert_cnt += 1
 
-        if (batch_cnt >= batchsize) or (row_cnt == total_rows):
-            if not dry_run:
-                with database.batch() as batch:
-                    batch.insert(
-                        table=table_id,
-                        columns=target_col,
-                        values=row_batch
-                    )
+            if (batch_cnt >= batchsize) or (row_cnt == total_rows):
+                if not dry_run:
+                    with database.batch() as batch:
+                        batch.insert(
+                            table=table_id,
+                            columns=target_col,
+                            values=row_batch
+                        )
 
-                logging.info('Inserted {} rows into table {}'
-                                .format(batch_cnt, table_id))
-            else:
-                print('Dry-run batch = {}'
-                        .format(row_batch))
+                    logging.info('Inserted {} rows into table {}'
+                                    .format(batch_cnt, table_id))
+                else:
+                    print('Dry-run batch = {}'
+                            .format(row_batch))
 
-            batch_cnt = 0
-            row_batch = []
+                batch_cnt = 0
+                row_batch = []
 
-        if row_cnt < total_rows:
-            row_cnt += 1
+            if row_cnt < total_rows:
+                row_cnt += 1
 
-    print('Load job complete for source file {}. Inserted {} of {} rows'
-            .format(file_name, insert_cnt, row_cnt))
+        print('Load job complete for source file {}. Inserted {} of {} rows'
+                .format(file_name, insert_cnt, row_cnt))
 
 
 if __name__ == '__main__':
