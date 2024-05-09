@@ -46,7 +46,14 @@ def parse_schema(schema_file):
     #         column = re.sub(r'[\n\t\s]*', '', column)
     #         col_name, col_type = column.split(":")
     #         col_mapping[col_name] = col_type
-    
+    def parse_schema(schema_file):
+    col_mapping = OrderedDict()
+    with open(schema_file) as f:
+        d = json.load(f)
+        for col in d:
+            col_name, col_type = col['name'], col['type']
+            col_mapping[col_name] = col_type
+
     return col_mapping
 
 def get_timestamp_with_nanoseconds(timestamp_string):
